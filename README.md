@@ -1,6 +1,6 @@
 # Watermark
 
-> **This is the code for the paper “What Makes a Watermark Survive? Understanding Robust Image Watermarking through Representation Margins”.**
+> **This is the code for the paper: "What Makes a Watermark Survive? Understanding Robust Image Watermarking through Representation Margins".**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-supported-5C3EE8?logo=opencv&logoColor=white)](https://opencv.org/)
