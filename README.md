@@ -2,8 +2,6 @@
 
 > **This is the code for the paper “What Makes a Watermark Survive? Understanding Robust Image Watermarking through Representation Margins”.**
 
-Training-free image watermarking based on DCT-QIM, chrominance anchors, and margin-guided reinforcement.
-
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-supported-5C3EE8?logo=opencv&logoColor=white)](https://opencv.org/)
 [![Pillow](https://img.shields.io/badge/Pillow-supported-3776AB)](https://python-pillow.org/)
@@ -50,5 +48,3 @@ recovered, confidence, crc_valid = extract_watermark(watermarked)
 print("Message accuracy:", np.mean(recovered == message))
 print("CRC valid:", crc_valid)
 ```
-
-The decoder requires only the received image. No per-image carrier list or additional side information is needed.
