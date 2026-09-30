@@ -1,82 +1,54 @@
-# Anchor-QIM Watermark
+# Watermark
 
-> **This is the code for a training-free image watermarking system based on DCT-QIM, chrominance anchors, and margin-guided reinforcement.**
+> **This is the code for the paper “What Makes a Watermark Survive? Understanding Robust Image Watermarking through Representation Margins”.**
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
-![OpenCV](https://img.shields.io/badge/OpenCV-supported-5C3EE8?logo=opencv&logoColor=white)
-![Pillow](https://img.shields.io/badge/Pillow-supported-3776AB)
+Training-free image watermarking based on DCT-QIM, chrominance anchors, and margin-guided reinforcement.
 
-## ✨ Code Structure
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-supported-5C3EE8?logo=opencv&logoColor=white)](https://opencv.org/)
+[![Pillow](https://img.shields.io/badge/Pillow-supported-3776AB)](https://python-pillow.org/)
+
+## 📁 Code Structure
 
 ```text
-final_anchor_qim_20260930/
-├── final_api.py                         # Public encoding and decoding API
-├── attacks.py                           # Evaluation-only attack module
-├── requirements.txt                     # Python dependencies
-├── methods/
-│   ├── deep_sync_qim/
-│   │   └── natural_invariant_qim.py     # Anchor detection and alignment
-│   ├── qim_watermark/
-│   │   └── qim_core.py                  # DCT-QIM and carrier allocation
-│   └── margin_watermark/
-│       └── ecc.py                       # CRC and convolutional coding
-└── scripts/
-    ├── evaluate_robustness_parallel.py # Robustness evaluation
-    ├── verify_blind_allocation.py      # Carrier-layout verification
-    └── verify_single_image_decode.py   # Single-image decoding test
+watermark/
+├── requirements.txt
+├── embed.py                         # Watermark embedding
+├── extract.py                       # Watermark extraction
+├── attack_test.py                   # Attack generation and evaluation
+└── methods/
+    ├── deep_sync_qim/
+    │   └── natural_invariant_qim.py # Anchor synchronization and decoding
+    ├── qim_watermark/
+    │   └── qim_core.py              # DCT-QIM and carrier operations
+    └── margin_watermark/
+        └── ecc.py                   # CRC and convolutional coding
 ```
 
-## 🚀 Inference
-
-### 1. Install dependencies
+## ⚙️ Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Encode a watermark
+## 🔍 Inference
 
 ```python
 import numpy as np
 from PIL import Image
-from final_api import encode_one
 
-message = np.random.default_rng(0).integers(
-    0, 2, 256, dtype=np.uint8
-)
+from embed import embed_watermark
+from extract import extract_watermark
 
 image = Image.open("input.png").convert("RGB")
-watermarked, info = encode_one(image, message)
+message = np.random.default_rng(0).integers(0, 2, 256, dtype=np.uint8)
+
+watermarked, info = embed_watermark(image, message)
 watermarked.save("watermarked.png")
 
-print(info)
-```
-
-### 3. Decode a watermark
-
-```python
-from PIL import Image
-from final_api import decode_one
-
-recovered, confidence, crc_valid = decode_one(
-    Image.open("watermarked.png").convert("RGB")
-)
-
-print("Recovered bits:", len(recovered))
-print("Confidence:", confidence)
+recovered, confidence, crc_valid = extract_watermark(watermarked)
+print("Message accuracy:", np.mean(recovered == message))
 print("CRC valid:", crc_valid)
 ```
 
-The decoder takes only the received image as input. The fixed protocol and key schedule are stored in the implementation; no per-image carrier list or reinforcement mask is required.
-
-### ⚙️ Default Configuration
-
-```text
-Message length     256 bits
-Coded length       417 bits
-DCT block          16 x 16
-QIM step           40
-Carrier region     Central 80%
-Margin threshold   tau = 1.98
-Synchronization    Four chrominance anchors
-```
+The decoder requires only the received image. No per-image carrier list or additional side information is needed.
